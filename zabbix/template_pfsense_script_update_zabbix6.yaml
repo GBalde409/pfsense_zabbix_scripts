@@ -2,10 +2,10 @@ zabbix_export:
   version: '6.0'
   date: '2026-10-30T00:00:00Z'
   groups:
-  - uuid: 714fe777a4ea5da0966dbefd25773772
+  - uuid: 8566fb75064b40a981ded3212c48289f
     name: Templates/O3
   templates:
-  - uuid: 71bab9a5c43b5cf586c9be6a2462b752
+  - uuid: 6383ad5195404e3ca120a1587d371f1d
     template: Template O3 pfSense Script Update
     name: Template O3 pfSense Script Update
     description: Atualizacao controlada do pfsense_zbx.php via GitHub, com bootstrap, hash, backup, status e cron noturno.
@@ -14,7 +14,7 @@ zabbix_export:
     groups:
     - name: Templates/O3
     items:
-    - uuid: d17b80f740775c3f9526bf4b41c0c639
+    - uuid: cf44adbf8a6f49fa9e58fec58383ad68
       name: 'pfSense script: solicitar atualizacao'
       type: ZABBIX_PASSIVE
       key: system.run["test '{$PFSENSE.ZBX.UPDATE.ENABLED}' = 1 || exit 0; test \"$(/usr/bin/id -u)\" = 0 || exit 1; PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin;
@@ -33,7 +33,7 @@ zabbix_export:
       value_type: UNSIGNED
       description: Disparo assincrono. Retorno 1 nao confirma instalacao. Exige agente como root; respeita UPDATE.ENABLED.
         Bootstrap confere hash antes de executar.
-    - uuid: 569beba6e8df597890fc52100f913372
+    - uuid: db85f004d9bc497f9700191eb897c780
       name: 'pfSense script: UID de execucao do agente'
       type: ZABBIX_PASSIVE
       key: system.run[/usr/bin/id -u]
@@ -44,7 +44,7 @@ zabbix_export:
       - tag: component
         value: pfsense-script-update
       value_type: UNSIGNED
-    - uuid: f43febea5de255f192c320c81ddd45e0
+    - uuid: 15242f9a19dd44b6af903a4dfc77a9b2
       name: 'pfSense script: status JSON'
       type: ZABBIX_PASSIVE
       key: vfs.file.contents[/var/db/pfsense-zbx-update/status.json]
@@ -55,7 +55,7 @@ zabbix_export:
       - tag: component
         value: pfsense-script-update
       value_type: TEXT
-    - uuid: 30fc005b25b75b4dbec96dadcbe71488
+    - uuid: ad04f31f957e4177b423dbc75f6c535a
       name: 'pfSense script: codigo da atualizacao'
       type: DEPENDENT
       key: pfz.update.code
@@ -74,7 +74,7 @@ zabbix_export:
         value: pfsense-script-update
       valuemap:
         name: pfSense script update status
-    - uuid: 540022b447a85249bfc4cd93e7330b64
+    - uuid: 08bf51daba284f808e8e87fcc0bb2c5b
       name: 'pfSense script: ultima verificacao concluida/iniciada'
       type: DEPENDENT
       key: pfz.update.checked_at
@@ -92,7 +92,7 @@ zabbix_export:
       - tag: component
         value: pfsense-script-update
       units: unixtime
-    - uuid: 28bf94795ee45318896c38e7b1e2b710
+    - uuid: 10c989366821418d936a665a3220bdb2
       name: 'pfSense script: ultima verificacao bem-sucedida'
       type: DEPENDENT
       key: pfz.update.last_success
@@ -110,7 +110,7 @@ zabbix_export:
       - tag: component
         value: pfsense-script-update
       units: unixtime
-    - uuid: 74ca4e277dad588394da4e55b1fdf42e
+    - uuid: 47313141b8284f76a99bf6fa979d79d2
       name: 'pfSense script: versao instalada'
       type: DEPENDENT
       key: pfz.update.installed_version
@@ -127,7 +127,7 @@ zabbix_export:
       tags:
       - tag: component
         value: pfsense-script-update
-    - uuid: 432a69414b47527e91e291eff35a4290
+    - uuid: e0e927d309324a5d991829bd15a9c9e5
       name: 'pfSense script: SHA-256 instalado'
       type: DEPENDENT
       key: pfz.update.installed_sha256
@@ -144,7 +144,7 @@ zabbix_export:
       tags:
       - tag: component
         value: pfsense-script-update
-    - uuid: 278771ba7f6f5fb69db5b8bc52072b87
+    - uuid: 588c12a43f394a47b5b2e665c6423b1a
       name: 'pfSense script: resultado detalhado'
       type: DEPENDENT
       key: pfz.update.message
@@ -184,7 +184,7 @@ zabbix_export:
       value: 53e6aeccb530b3df429d31aaaf42f27d04d6bd3250b918b94a529dd79b95b6f3
       description: Hash aprovado do atualizador.
     valuemaps:
-    - uuid: cd174fb307bc595f9f833b2232ad7c4f
+    - uuid: 56421cf845424409a4d04daa0725dec5
       name: pfSense script update status
       mappings:
       - value: '0'
@@ -196,35 +196,35 @@ zabbix_export:
       - value: '3'
         newvalue: Ainda nao executado
   triggers:
-  - uuid: 2c9ac62e0d0d50d9a10c773d3d016f73
+  - uuid: 00e9965ee55f46eaa9044c72433d3400
     name: 'pfSense script: agente sem permissao root'
     expression: '{$PFSENSE.ZBX.UPDATE.ENABLED}=1 and (last(/Template O3 pfSense Script Update/system.run[/usr/bin/id -u])<>0)'
     priority: HIGH
     tags:
     - tag: component
       value: pfsense-script-update
-  - uuid: fa4494164fba5342a151483bd2830282
+  - uuid: cddff29e931d49468b79646b19e31269
     name: 'pfSense script: falha na atualizacao'
     expression: '{$PFSENSE.ZBX.UPDATE.ENABLED}=1 and (last(/Template O3 pfSense Script Update/pfz.update.code)=1)'
     priority: HIGH
     tags:
     - tag: component
       value: pfsense-script-update
-  - uuid: 364e773d563350d9a96bfaa76ee0bf1e
+  - uuid: 7fb9d353050142018d24a753b456e87f
     name: 'pfSense script: status de atualizacao ausente'
     expression: '{$PFSENSE.ZBX.UPDATE.ENABLED}=1 and (nodata(/Template O3 pfSense Script Update/pfz.update.code,30m)=1)'
     priority: WARNING
     tags:
     - tag: component
       value: pfsense-script-update
-  - uuid: e50801f88a835577bd6a0024a2113146
+  - uuid: c11fea351b154599ad4e836c854f4468
     name: 'pfSense script: verificacao de atualizacao atrasada'
     expression: '{$PFSENSE.ZBX.UPDATE.ENABLED}=1 and (now()-last(/Template O3 pfSense Script Update/pfz.update.checked_at)>{$PFSENSE.ZBX.UPDATE.MAX_AGE})'
     priority: WARNING
     tags:
     - tag: component
       value: pfsense-script-update
-  - uuid: 9eb0c65b505754bda0ef91974182aee3
+  - uuid: b8b525a9bf8942fb8d195cd168e9f743
     name: 'pfSense script: atualizacao excedeu 10 minutos'
     expression: '{$PFSENSE.ZBX.UPDATE.ENABLED}=1 and (last(/Template O3 pfSense Script Update/pfz.update.code)=2 and now()-last(/Template
       O3 pfSense Script Update/pfz.update.checked_at)>600)'
@@ -232,7 +232,7 @@ zabbix_export:
     tags:
     - tag: component
       value: pfsense-script-update
-  - uuid: 996baabcfe925fb4a2ae55041c11a6fc
+  - uuid: 00dc6d62f5e540d0bbf17574d3ec1314
     name: 'pfSense script: hash instalado diferente do aprovado'
     expression: '{$PFSENSE.ZBX.UPDATE.ENABLED}=1 and (last(/Template O3 pfSense Script Update/pfz.update.code)=0 and last(/Template
       O3 pfSense Script Update/pfz.update.installed_sha256)<>"{$PFSENSE.ZBX.SCRIPT.SHA256}")'

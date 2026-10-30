@@ -99,10 +99,12 @@ Para pausar a distribuição, defina `UPDATE.ENABLED=0`. Isso não encerra um pr
 
 ## Validação
 
+Correção de importação em 30/10/2026: os 18 identificadores foram substituídos por UUIDv4, conforme exigido pela API do Zabbix 6. O erro anterior de UUIDv5 foi reproduzido com `CApiInputValidator::validateUuid` do código oficial; esse mesmo método aceitou os 18 identificadores corrigidos. Esta verificação cobre os UUIDs, sem simular uma importação completa no servidor.
+
 - PHP 8.3.6: sintaxe dos dois PHPs aprovada; shell do bootstrap aprovado por `sh -n`.
 - **39 verificações** do speedtest com includes pfSense simulados: janela, cache, lock, timeout, seleção de WANs e SMART.
 - **25 verificações** do atualizador com downloads simulados: idempotência, backup, rollback, hash, PHP inválido, falha de download, lock e encerramento do processo externo.
-- **21 verificações** do YAML/bootstrap: referências, hashes e commits, gate de habilitação, ausência de root, comando efetivamente executado em sandbox, download corrompido e PHP inválido.
+- **24 verificações** do YAML/bootstrap (incluindo UUIDv4 de todas as entidades): referências, hashes e commits, gate de habilitação, ausência de root, comando efetivamente executado em sandbox, download corrompido e PHP inválido.
 - O esquema de exportação foi conferido com a estrutura do validador `C60XmlValidator` do Zabbix. **A importação em um Zabbix real e a execução em pfSense de produção continuam pendentes do piloto.** PHP 7.4/pfSense 2.8.1 não foram executados neste ambiente.
 
 Para repetir em ambiente de desenvolvimento, com PHP, Python 3 e PyYAML disponíveis:

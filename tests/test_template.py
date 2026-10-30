@@ -8,6 +8,7 @@ import re
 import shlex
 import subprocess
 import tempfile
+import uuid
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +26,27 @@ def check(value, message):
     print('PASS', message)
 
 
+def collect_uuids(value):
+    if isinstance(value, dict):
+        for name, child in value.items():
+            if name == 'uuid':
+                yield child
+            else:
+                yield from collect_uuids(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from collect_uuids(child)
+
+
+def valid_uuid4(value):
+    # Zabbix 6 API requires 32 hex digits, version 4 and RFC 4122 variant.
+    return isinstance(value, str) and re.fullmatch(r'[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}', value) is not None
+
+
+identifiers = list(collect_uuids(data))
+check(len(identifiers) == 18 and all(valid_uuid4(value) and uuid.UUID(hex=value).version == 4 for value in identifiers), 'all 18 exported identifiers are UUIDv4 accepted by Zabbix 6')
+check(len(identifiers) == len(set(identifiers)), 'all exported UUIDs are unique')
+check(not valid_uuid4('714fe777a4ea5da0966dbefd25773772'), 'regression: previous UUIDv5 identifier is rejected')
 check(data['version'] == '6.0' and 'groups' in data and 'template_groups' not in data, 'Zabbix 6 group/export format')
 check(macros['{$PFSENSE.ZBX.UPDATE.ENABLED}'] == '0', 'automatic deployment disabled until pilot opt-in')
 items = {i['key']: i for i in tpl['items']}
