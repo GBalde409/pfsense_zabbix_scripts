@@ -1,6 +1,8 @@
 # Automações pfSense / Zabbix
 
-O arquivo existente `dhcp_leases.php` foi preservado. O módulo abaixo distribui a versão aprovada de `pfsense_zbx.php` aos firewalls pelo Zabbix 6, sem novo UserParameter e sem executar speedtest durante a atualização.
+Esta branch é uma origem independente para o script de monitoramento. `dhcp_leases.php` foi removido desta branch e permanece preservado em `main`, para atender à LLD existente. O PR #1 foi encerrado sem merge: não mescle esta branch diretamente à `main` enquanto ela excluir o DHCP.
+
+O módulo abaixo distribui a versão aprovada de `pfsense_zbx.php` aos firewalls pelo Zabbix 6, sem novo UserParameter e sem executar speedtest durante a atualização.
 
 ## Arquivos
 
@@ -29,6 +31,12 @@ A descoberta e os valores dos gateways não dependem do speedtest. A atualizaç�
 - Zabbix agent com comandos remotos já permitidos, incluindo a chamada `system.run[...,nowait]` do template.
 - **O comando precisa executar como root.** Este template não cria permissões de sudo e não usa sudo genérico. O item “UID de execução do agente” deve retornar `0`. Se retornar outro UID, provisione a permissão adequada pela automação administrativa do ambiente antes de habilitar esse host. Uma permissão restrita ao smartctl não cobre esta instalação.
 - A versão do template usa itens Zabbix agent passivos. Para hosts exclusivamente ativos, adapte o tipo dos itens independentes conforme o padrão existente e valide no piloto.
+
+## Compatibilidade com Firewall Zabbix agent
+
+A atualização mantém o caminho `/root/scripts/pfsense_zbx.php`, os argumentos usados por `pfsense.value[*]` e o arquivo de configuração do agente. Assim, a verificação de existência do PHP e as verificações de `AllowRoot=1` e da linha do UserParameter continuam compatíveis. Elas não conferem o conteúdo ou o hash do PHP principal.
+
+Mantenha esses itens de auditoria. O status de versão/hash do novo módulo complementa a existência do arquivo. Se uma ação ligada à trigger de ausência do script ainda baixar a versão antiga, atualize essa origem junto com o provisionamento. Ações do Zabbix não são incluídas no export de templates e precisam de revisão no servidor.
 
 ## Importar e testar em um piloto
 
