@@ -95,3 +95,6 @@ $disks=['ada0'=>['SMART Health Status: OK',0]];
 check(capture(function(){pfz_get_smart_status();})==='0','healthy SMART result');
 $disks=[];check(capture(function(){pfz_get_smart_status();})==='2','no disks is unknown');
 echo "TOTAL $checks checks passed\n";
+// Remove only the isolated fixture directory created by this test.
+foreach (glob($root . '/*') as $fixture) if (is_file($fixture)) unlink($fixture);
+rmdir($root);
